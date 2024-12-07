@@ -20,8 +20,9 @@ pipeline {
     stage('Prepare Dependencies') {
       steps {
              sh 'mv .env.sample .env'
-             sh 'mkdir -p storage/app storage/framework/{cache,sessions,views} storage/logs bootstrap/cache'
+             sh 'mkdir -p storage/app storage/framework/{cache,sessions,views}  bootstrap/cache'
              sh 'sudo chmod -R 775 storage bootstrap/cache'
+             sh 'sudo chmod -R 775 storage storage/logs'
              sh 'sudo chown -R www-data:www-data storage bootstrap/cache' 
              sh 'composer install'
              sh 'php artisan migrate'
