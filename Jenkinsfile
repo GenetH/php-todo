@@ -30,7 +30,7 @@ pipeline {
                     sudo chown -R www-data:www-data storage bootstrap/cache
                 '''
 
-                # Install dependencies and set up Laravel
+              
                 sh '''
                     composer install
                     php artisan migrate --force
