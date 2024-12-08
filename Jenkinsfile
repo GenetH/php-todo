@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage("Initial cleanup") {
+        stage("Initial Cleanup") {
             steps {
                 dir("${WORKSPACE}") {
                     deleteDir()
@@ -10,52 +10,76 @@ pipeline {
             }
         }
 
-        stage('Checkout SCM') {
+        stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/GenetH/php-todo'
             }
         }
 
-        stage('Prepare Dependencies') {
+        stage('Prepare Workspace') {
             steps {
-                sh '''
-                    # Move environment file
-                    mv .env.sample .env
+                script {
+                    sh '''
+                        # Create necessary directories and log file
+                        mkdir -p storage/app storage/framework/{cache,sessions,views} storage/logs bootstrap/cache
+                        touch storage/logs/laravel.log
 
-                    # Create required directories
-                    mkdir -p storage/app storage/framework/{cache,sessions,views} storage/logs bootstrap/cache
+                        # Set permissions
+                        sudo chmod -R 775 storage bootstrap/cache
+                        sudo chown -R www-data:www-data storage bootstrap/cache
+                    '''
+                }
+            }
+        }
 
-                    # Set permissions
-                    sudo chmod -R 775 storage bootstrap/cache
-                    sudo chown -R www-data:www-data storage bootstrap/cache
-                '''
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    sh '''
+                        # Install PHP dependencies
+                        composer install
+                    '''
+                }
+            }
+        }
 
-              
-                sh '''
-                    composer install
-                    php artisan migrate --force
-                    php artisan db:seed --force
-                    php artisan key:generate
-                '''
+        stage('Laravel Setup') {
+            steps {
+                script {
+                    sh '''
+                        # Run Laravel commands
+                        php artisan key:generate
+                        php artisan migrate --force
+                        php artisan db:seed --force
+                        php artisan config:cache
+                        php artisan route:cache
+                        php artisan view:cache
+                    '''
+                }
             }
         }
 
         stage('Execute Unit Tests') {
             steps {
-                sh './vendor/bin/phpunit'
+                script {
+                    sh '''
+                        # Run PHP unit tests
+                        ./vendor/bin/phpunit
+                    '''
+                }
             }
         }
     }
 
     post {
         always {
-            echo 'Pipeline execution completed!'
+            echo 'Pipeline execution completed.'
         }
         success {
             echo 'Pipeline executed successfully!'
         }
         failure {
-            echo 'Pipeline failed. Please check the logs.'
+            echo 'Pipeline failed. Check logs for more details.'
         }
     }
 }
