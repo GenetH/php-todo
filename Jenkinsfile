@@ -27,11 +27,12 @@ pipeline {
             }
         }
 
-        stage('Execute Unit Tests') {
-            steps {
-                sh './vendor/bin/phpunit --verbose'
-            }
-        }
+       stage('Execute Unit Tests') {
+      steps {
+             sh './vendor/bin/phpunit'
+      }
+
+    }
 
     }
 }
