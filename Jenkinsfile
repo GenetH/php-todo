@@ -7,9 +7,7 @@ pipeline {
             steps {
                 dir("${WORKSPACE}") {
                     deleteDir()
-                    // Fix permissions
-                    sh 'chmod -R 775 .'
-                }
+             }
             }
         }
 
@@ -21,13 +19,11 @@ pipeline {
 
         stage('Prepare Dependencies') {
             steps {
-                sh 'mv .env.sample .env || echo ".env.sample not found, skipping rename"'
-                sh 'composer install -vvv'
-                sh 'php artisan config:clear'
-                sh 'php artisan cache:clear'
-                sh 'php artisan migrate -vvv'
-                sh 'php artisan db:seed -vvv'
-                sh 'php artisan key:generate -vvv'
+                sh 'mv .env.sample .env'
+                sh 'composer install'
+                sh 'php artisan migrate'
+                sh 'php artisan db:seed'
+                sh 'php artisan key:generate'
             }
         }
 
