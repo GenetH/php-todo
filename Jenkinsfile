@@ -36,11 +36,10 @@ pipeline {
     stage('Code Analysis') {
       steps {
             sh 'phploc app/ --log-csv build/logs/phploc.csv'
-            sudo chown -R jenkins:jenkins build/
+            sh 'sudo chown -R jenkins:jenkins build/'
 
       }
     }
-
           stage('Plot Code Coverage Report') {
             steps {
                 plot csvFileName: 'plot-loc.csv',
