@@ -21,8 +21,8 @@ pipeline {
             steps {
                 sh 'mv .env.sample .env'
                 sh 'composer install'
-                sh 'mkdir -p storage/framework/sessions storage/framework/cache storage/framework/views'
-                sh 'chmod -R 775 storage bootstrap/cache'
+                sh 'sudo mkdir -p storage/framework/sessions storage/framework/cache storage/framework/views'
+                sh 'sudo chmod -R 775 storage bootstrap/cache'
                 sh 'php artisan migrate'
                 sh 'php artisan db:seed'
                 sh 'php artisan key:generate'
