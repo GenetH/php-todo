@@ -36,7 +36,7 @@ pipeline {
     stage('Code Analysis') {
       steps {
             sh 'phploc app/ --log-csv build/logs/phploc.csv'
-            sh 'sudo chown -R jenkins:jenkins build/'
+            sh 'ls -l build/logs/' // Debug step to confirm CSV generation
 
       }
     }
