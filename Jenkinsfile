@@ -37,7 +37,7 @@ pipeline {
       steps {
             sh 'sudo phploc app/ --log-csv build/logs/phploc.csv'
             sh 'sudo chown -R jenkins:jenkins build/logs/'
-            sh 'sudo chmod -R 777 jenkins:jenkins build/logs/'
+            sh 'sudo chmod -R 777 build/logs/'
             sh 'ls -l build/logs/' // Debug step to confirm CSV generation
             
 
