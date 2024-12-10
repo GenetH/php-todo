@@ -33,7 +33,9 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                
+                sh 'mkdir -p build/logs'
+                sh 'sudo chown -R jenkins:jenkins build/logs/'
+                sh 'sudo chmod -R 777 build/logs/'
                 sh 'phploc app/ --log-csv build/logs/phploc.csv'
                 sh 'ls -l build/logs/' // Debug step
                 sh 'cat build/logs/phploc.csv || echo "CSV file not created!"'
