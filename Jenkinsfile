@@ -5,7 +5,7 @@ pipeline {
 
         stage("Initial cleanup") {
             steps {
-                cleanWs() // Clean workspace
+                cleanWs()
             }
         }
 
@@ -34,10 +34,11 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh 'mkdir -p build/logs'
-                sh 'phploc app/ --log-csv build/logs/phploc.csv'
                 sh 'sudo chown -R jenkins:jenkins build/logs/'
                 sh 'sudo chmod -R 777 build/logs/'
-                sh 'ls -l build/logs/' // Debug step to confirm CSV generation
+                sh 'phploc app/ --log-csv build/logs/phploc.csv'
+                sh 'ls -l build/logs/' // Debug step
+                sh 'cat build/logs/phploc.csv || echo "CSV file not created!"'
 
                 // Simplify CSV for plotting
                 script {
@@ -51,14 +52,11 @@ pipeline {
 
         stage('Plot Code Coverage Report') {
             steps {
-                script {
-                    echo "Plotting Lines of Code Metrics..."
-                    plot csvFileName: 'build/logs/plot-loc.csv',
-                         group: 'Code Metrics',
-                         title: 'Lines of Code',
-                         style: 'line',
-                         csvSeries: [[displayTableFlag: false, exclusionValues: 'Metric,Value']]
-                }
+                plot csvFileName: 'build/logs/plot-loc.csv',
+                     group: 'Code Metrics',
+                     title: 'Lines of Code',
+                     style: 'line',
+                     csvSeries: [[displayTableFlag: false, exclusionValues: 'Metric,Value']]
             }
         }
     }
