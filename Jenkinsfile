@@ -3,9 +3,10 @@ pipeline {
 
     stages {
 
-        stage("Initial cleanup") {
+        stages {
+        stage('Initial Cleanup') {
             steps {
-                cleanWs()
+                deleteDir()
             }
         }
 
