@@ -7,7 +7,7 @@ pipeline {
                 deleteDir()
             }
         }
-        }
+        
         stage('Checkout SCM') {
             steps {
                 git branch: 'main', url: 'https://github.com/GenetH/php-todo'
@@ -66,4 +66,5 @@ pipeline {
     }
 
     
+}
 }
