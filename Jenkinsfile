@@ -59,21 +59,20 @@ pipeline {
                 plot csvFileName: 'plot-objects.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Interfaces,Traits,Classes,Methods,Functions,Constants', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'BB - Structure Objects', yaxis: 'Count'
             }
         }
-        stage('SonarQube Quality Gate') {
+     stage('SonarQube Quality Gate') {
     environment {
         scannerHome = tool 'SonarQubeScanner'
-        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64' // Update this path to your Java 21 installation
+        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64' // Update to the correct path for Java 11
         PATH = "${JAVA_HOME}/bin:${PATH}"
     }
     steps {
         withSonarQubeEnv('sonarqube') {
-            sh """
-                ${scannerHome}/bin/sonar-scanner \
-                -Dsonar.ce.javaAdditionalOpts="--add-opens java.base/java.lang=ALL-UNNAMED"
-            """
+            sh "${scannerHome}/bin/sonar-scanner"
         }
     }
 }
+
+
 
 
         
