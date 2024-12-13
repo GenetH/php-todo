@@ -109,7 +109,7 @@ stage ('Upload Artifact to Artifactory') {
     }
   }
           stage ('Deploy to Test Environment') {
-            agent { label 'slave_two' } // Specify another Jenkins slave for deployment
+            agent { label 'slave_2' } // Specify another Jenkins slave for deployment
             steps {
                 build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'pentest']], propagate: false, wait: true
             }
