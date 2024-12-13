@@ -60,16 +60,24 @@ pipeline {
             }
         }
         stage('SonarQube Quality Gate') {
-        environment {
-            scannerHome = tool 'SonarQubeScanner'
-        }
-        steps {
-            withSonarQubeEnv('sonarqube') {
-                sh "${scannerHome}/bin/sonar-scanner"
-            }
-
+    environment {
+        scannerHome = tool 'SonarQubeScanner'
+        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64' // Update this path to your Java 21 installation
+        PATH = "${JAVA_HOME}/bin:${PATH}"
+    }
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh """
+                ${scannerHome}/bin/sonar-scanner \
+                -Dsonar.ce.javaAdditionalOpts="--add-opens java.base/java.lang=ALL-UNNAMED"
+            """
         }
     }
+}
+
+
+        
+    
         stage ('Package Artifact') {
     steps {
             sh 'zip -qr php-todo.zip ${WORKSPACE}/*'
