@@ -110,6 +110,18 @@ stage ('Upload Artifact to Artifactory') {
     build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
     }
   }
+          stage ('Deploy to Test Environment') {
+            agent { label 'slave_two' } // Specify another Jenkins slave for deployment
+            steps {
+                build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'pentest']], propagate: false, wait: true
+            }
+        }
+                stage ('Deploy to Production Environment') {
+            agent any
+            steps {
+                build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'ci']], propagate: false, wait: true
+            }
+        }
 
     }
 }
